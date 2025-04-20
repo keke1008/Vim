@@ -647,7 +647,6 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
 
     const recordedState = this.vimState.recordedState;
     recordedState.actionKeys.push(key);
-    void VSCodeContext.set('vim.command', recordedState.commandString);
 
     const action = getRelevantAction(recordedState.actionKeys, this.vimState);
     switch (action) {
@@ -664,8 +663,11 @@ export class ModeHandler implements vscode.Disposable, IModeHandler {
         return false;
       case KeypressState.WaitingOnKeys:
         this.vimState.recordedState.waitingForAnotherActionKey = true;
+        void VSCodeContext.set('vim.command', recordedState.commandString);
 
         return false;
+      default:
+        void VSCodeContext.set('vim.command', '');
     }
 
     if (
